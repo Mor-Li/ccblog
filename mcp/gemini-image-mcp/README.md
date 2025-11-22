@@ -18,27 +18,21 @@ npm run build
 
 ## Configuration
 
-Add to your Claude Code MCP config (`~/.claude/claude_desktop_config.json`):
+使用 `claude mcp add` 命令添加 MCP 服务：
 
-```json
-{
-  "mcpServers": {
-    "gemini-image": {
-      "name": "Gemini 图片生成",
-      "command": "node",
-      "args": [
-        "/Users/limo/Documents/GithubRepo/ccblog/mcp/gemini-image-mcp/dist/index.js"
-      ],
-      "env": {
-        "OPENAI_API_KEY": "***REMOVED-API-KEY***",
-        "OPENAI_BASE_URL": "your-openai-compatible-api-url"
-      }
-    }
-  }
-}
+```bash
+claude mcp add --transport stdio \
+  -e OPENAI_API_KEY=你的千循API密钥 \
+  -e OPENAI_BASE_URL=your-openai-compatible-api-url \
+  -- gemini-image node /path/to/ccblog/mcp/gemini-image-mcp/dist/index.js
 ```
 
-Or use environment variables from your shell.
+**注意：** 请将路径替换为你本地的实际路径。
+
+验证配置：
+```bash
+claude mcp list
+```
 
 ## Usage
 

@@ -20,30 +20,25 @@ npx tsc -b
 
 ### 2. 配置 Claude Code MCP
 
-将以下配置添加到你的 Claude Code MCP 配置文件中：
+使用 `claude mcp add` 命令添加 MCP 服务：
 
-**macOS/Linux**: `~/.claude/claude_desktop_config.json`
-**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+```bash
+# 添加微信公众号发布 MCP
+claude mcp add --transport stdio \
+  -e WECHAT_APP_ID=你的微信公众号AppID \
+  -e WECHAT_APP_SECRET=你的微信公众号AppSecret \
+  -- wenyan-mcp node /Users/limo/Documents/GithubRepo/ccblog/mcp/wenyan-mcp/dist/index.js
 
-```json
-{
-  "mcpServers": {
-    "wenyan-mcp": {
-      "name": "公众号助手",
-      "command": "node",
-      "args": [
-        "/Users/limo/Documents/GithubRepo/ccblog/mcp/wenyan-mcp/dist/index.js"
-      ],
-      "env": {
-        "WECHAT_APP_ID": "你的微信公众号 App ID",
-        "WECHAT_APP_SECRET": "你的微信公众号 App Secret"
-      }
-    }
-  }
-}
+# 添加 Gemini 图片生成 MCP（可选）
+claude mcp add --transport stdio \
+  -e OPENAI_API_KEY=你的千循API密钥 \
+  -e OPENAI_BASE_URL=your-openai-compatible-api-url \
+  -- gemini-image node /Users/limo/Documents/GithubRepo/ccblog/mcp/gemini-image-mcp/dist/index.js
 ```
 
-### 3. 获取微信公众号认证信息
+**注意：** 请将命令中的路径替换为你本地的实际路径。
+
+### 获取微信公众号认证信息
 
 1. 登录微信公众平台：https://mp.weixin.qq.com
 2. 进入「设置与开发」→「基本配置」
@@ -52,11 +47,21 @@ npx tsc -b
 
 详细配置说明：https://yuzhi.tech/docs/wenyan/upload
 
-### 4. 重启 Claude Code
+### 3. 验证 MCP 服务
 
-配置完成后重启 Claude Code，让 MCP 服务生效。
+配置完成后，使用以下命令验证 MCP 服务是否正常：
 
-### 5. 使用 Claude Code 发布文章
+```bash
+claude mcp list
+```
+
+你应该看到类似这样的输出：
+```
+✓ wenyan-mcp: Connected
+✓ gemini-image: Connected
+```
+
+### 4. 使用 Claude Code 发布文章
 
 现在你可以直接在 Claude Code 中这样操作：
 

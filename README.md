@@ -38,6 +38,10 @@ claude mcp add --transport stdio \
 # 添加 Playwright MCP（可选，用于网页自动化）
 claude mcp add --transport stdio \
   -- playwright npx -y @playwright/mcp@latest --headless --isolated --viewport-size 3840x2160
+
+# 添加 MinerU PDF 解析 MCP（可选，用于 PDF 转 Markdown）
+claude mcp add --transport stdio \
+  -- mineru-pdf /Users/limo/Documents/GithubRepo/ccblog/.venv/bin/python /Users/limo/Documents/GithubRepo/ccblog/mcp/mineru-pdf-mcp/server.py
 ```
 
 **注意：** 请将命令中的路径替换为你本地的实际路径。
@@ -300,17 +304,21 @@ python -m mineru.cli.client -p /path/to/paper.pdf -o ./output -l en
 ./mcp/mineru-pdf-mcp/parse_pdf.sh /path/to/paper.pdf ./output
 ```
 
-#### 方式二：在 Claude Code 中使用便捷脚本
+#### 方式二：通过 Claude Code MCP（推荐）
 
-在 Claude Code 对话中，你可以直接说：
+配置好 MCP 后，直接在 Claude Code 中说：
 
 ```
-使用 parse_pdf.sh 帮我解析这个 PDF：/path/to/document.pdf
+帮我解析这个 PDF 为 Markdown：/path/to/document.pdf
 ```
 
-Claude Code 会自动调用解析脚本并显示结果。
+或
 
-> **注意**：MinerU 官方的 MCP 服务器需要云端 API Key 或本地 FastAPI 服务，不是纯本地 pipeline。如果需要完全本地运行，推荐直接使用命令行或脚本方式。
+```
+使用 parse_pdf 工具解析这个论文，输出到 ./output 目录
+```
+
+Claude Code 会自动调用 MinerU 本地解析，无需任何 API Key。
 
 ### 输出结果
 
@@ -364,6 +372,7 @@ ccblog/
 │   │   ├── dist/              # 编译输出
 │   │   └── package.json
 │   ├── mineru-pdf-mcp/        # MinerU PDF 解析服务
+│   │   ├── server.py          # MCP 服务器（完全本地运行）
 │   │   ├── parse_pdf.sh       # 便捷解析脚本
 │   │   ├── README_CN.md       # 中文快速开始
 │   │   └── LOCAL_SETUP.md     # 详细部署指南

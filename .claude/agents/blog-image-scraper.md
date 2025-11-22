@@ -43,6 +43,8 @@ When given a URL to a blog post or article, you will:
 - Generate meaningful filenames based on alt text, surrounding context, or image content when possible
 - Avoid filename conflicts by appending numbers if necessary (e.g., diagram-1.jpg, diagram-2.jpg)
 - Preserve original file extensions
+- **IMPORTANT: Remove all spaces from filenames** - Replace spaces (including special space characters like `\u202f` narrow no-break space, `\u00a0` non-breaking space) with underscores or hyphens. Spaces in filenames cause issues with Markdown rendering.
+- After downloading all images, verify that no filenames contain space characters
 - Create a manifest file (images.json) listing all downloaded images with their original URLs and metadata
 
 ### Error Handling

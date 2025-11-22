@@ -74,9 +74,9 @@ def parse_pdf(pdf_path: str, output_dir: str = "./output", language: str = "en",
             )
 
             if result.returncode == 0:
-                # MinerU 会创建 pdf_name/auto/ 结构，我们需要将内容移动到用户指定的目录
+                # MinerU 会创建 pdf_name/mode/ 结构，我们需要将内容移动到用户指定的目录
                 pdf_name = Path(pdf_path).stem
-                mineru_output = Path(temp_dir) / pdf_name / "auto"
+                mineru_output = Path(temp_dir) / pdf_name / mode
 
                 if mineru_output.exists():
                     # 将 auto/ 目录下的所有内容移动到用户指定的输出目录

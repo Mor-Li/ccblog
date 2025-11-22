@@ -174,9 +174,10 @@ def cut_image(bbox: tuple, page_num: int, page_pil_img, return_path, image_write
     # 老版本返回不带bucket的路径
     img_path = f"{return_path}_{filename}" if return_path is not None else None
 
-    # 新版本生成平铺路径
-    img_hash256_path = f"{str_sha256(img_path)}.jpg"
-    # img_hash256_path = f'{img_path}.jpg'
+    # 新版本生成平铺路径 - 使用短哈希提高可读性
+    # 格式: page_{页码}_img_{短哈希3位}.jpg
+    short_hash = str_sha256(img_path)[:3]
+    img_hash256_path = f"page_{page_num}_img_{short_hash}.jpg"
 
     crop_img = get_crop_img(bbox, page_pil_img, scale=scale)
 

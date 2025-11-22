@@ -30,6 +30,7 @@ You will be working with blog folders containing:
    - Cross-reference images with their descriptions in the blog
    - Identify charts, graphs, or diagrams that lack sufficient explanation
    - Check if the blog accurately represents what the visuals show
+   - **IMPORTANT**: Verify that all key images from the original source material are inserted into the blog - check if any important images are missing from the article
    - INSERT detailed, plain-language interpretations near the relevant images
    - Add context about what readers should focus on in complex visuals
    - **CRITICAL**: When editing image alt text, never use Chinese quotation marks (""") - they break WeChat rendering. Always use plain text without quotes

@@ -8,6 +8,8 @@ import json
 import sys
 import subprocess
 import os
+import shutil
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -44,57 +46,84 @@ def parse_pdf(pdf_path: str, output_dir: str = "./output", language: str = "en",
             return {"success": False, "error": f"PDF 文件不存在: {pdf_path}"}
 
         # 获取虚拟环境的 Python 路径
-        venv_python = "/Users/limo/Documents/GithubRepo/ccblog/.venv/bin/python"
+        venv_python = "/home/limo/ccblog/.venv/bin/python"
 
-        # 构建命令
-        cmd = [
-            venv_python,
-            "-m", "mineru.cli.client",
-            "-p", pdf_path,
-            "-o", output_dir,
-            "-l", language,
-            "-m", mode
-        ]
+        # 使用临时目录，因为 MinerU 会创建 pdf_name/auto/ 结构
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # 构建命令，先输出到临时目录
+            cmd = [
+                venv_python,
+                "-m", "mineru.cli.client",
+                "-p", pdf_path,
+                "-o", temp_dir,
+                "-l", language,
+                "-m", mode
+            ]
 
-        if enable_formula:
-            cmd.extend(["-f", "true"])
-        if enable_table:
-            cmd.extend(["-t", "true"])
+            if enable_formula:
+                cmd.extend(["-f", "true"])
+            if enable_table:
+                cmd.extend(["-t", "true"])
 
-        # 执行命令
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            cwd="/Users/limo/Documents/GithubRepo/ccblog"
-        )
+            # 执行命令
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                cwd="/home/limo/ccblog"
+            )
 
-        if result.returncode == 0:
-            # 查找生成的 Markdown 文件
-            pdf_name = Path(pdf_path).stem
-            output_path = Path(output_dir) / pdf_name
-            md_file = output_path / "auto" / f"{pdf_name}.md"
-            images_dir = output_path / "auto" / "images"
+            if result.returncode == 0:
+                # MinerU 会创建 pdf_name/auto/ 结构，我们需要将内容移动到用户指定的目录
+                pdf_name = Path(pdf_path).stem
+                mineru_output = Path(temp_dir) / pdf_name / "auto"
 
-            # 统计图片数量
-            image_count = 0
-            if images_dir.exists():
-                image_count = len(list(images_dir.glob("*")))
+                if mineru_output.exists():
+                    # 将 auto/ 目录下的所有内容移动到用户指定的输出目录
+                    target_dir = Path(output_dir)
+                    target_dir.mkdir(parents=True, exist_ok=True)
 
-            return {
-                "success": True,
-                "message": "PDF 解析成功",
-                "markdown_file": str(md_file) if md_file.exists() else None,
-                "images_dir": str(images_dir) if images_dir.exists() else None,
-                "image_count": image_count,
-                "output_dir": str(output_path)
-            }
-        else:
-            return {
-                "success": False,
-                "error": result.stderr or "解析失败",
-                "stdout": result.stdout
-            }
+                    # 移动所有文件和文件夹
+                    for item in mineru_output.iterdir():
+                        target_path = target_dir / item.name
+                        # 如果目标已存在，先删除
+                        if target_path.exists():
+                            if target_path.is_dir():
+                                shutil.rmtree(target_path)
+                            else:
+                                target_path.unlink()
+                        # 移动文件/文件夹
+                        shutil.move(str(item), str(target_path))
+
+                    # 更新路径
+                    md_file = target_dir / f"{pdf_name}.md"
+                    images_dir = target_dir / "images"
+                else:
+                    # 如果 auto 目录不存在，返回错误
+                    return {
+                        "success": False,
+                        "error": f"MinerU 输出目录不存在: {mineru_output}"
+                    }
+
+                # 统计图片数量
+                image_count = 0
+                if images_dir.exists():
+                    image_count = len(list(images_dir.glob("*")))
+
+                return {
+                    "success": True,
+                    "message": "PDF 解析成功",
+                    "markdown_file": str(md_file) if md_file.exists() else None,
+                    "images_dir": str(images_dir) if images_dir.exists() else None,
+                    "image_count": image_count,
+                    "output_dir": str(target_dir)
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": result.stderr or "解析失败",
+                    "stdout": result.stdout
+                }
 
     except Exception as e:
         return {"success": False, "error": str(e)}

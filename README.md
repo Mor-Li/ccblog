@@ -269,6 +269,90 @@ npm install -g @wenyan-md/mcp
 }
 ```
 
+## PDF 解析工具（MinerU）
+
+### 功能特性
+
+MinerU 是一个本地运行的 PDF 解析工具，可以：
+- ✅ **完全本地运行**，无需 API Key
+- ✅ **PDF 转 Markdown**，保留格式和结构
+- ✅ **自动提取图片**，保存为独立文件
+- ✅ **支持公式识别**（LaTeX 格式）
+- ✅ **表格提取**，转换为 Markdown 表格
+- ✅ **多语言 OCR**（中文、英文、日语等）
+
+### 使用方法
+
+#### 方式一：直接使用命令行
+
+```bash
+# 激活环境
+cd /Users/limo/Documents/GithubRepo/ccblog
+source .venv/bin/activate
+
+# 首次使用：下载模型（约 2-3GB，只需一次）
+python -m mineru.cli.models_download
+
+# 解析单个 PDF
+python -m mineru.cli.client -p /path/to/paper.pdf -o ./output -l en
+
+# 使用便捷脚本
+./mcp/mineru-pdf-mcp/parse_pdf.sh /path/to/paper.pdf ./output
+```
+
+#### 方式二：在 Claude Code 中使用便捷脚本
+
+在 Claude Code 对话中，你可以直接说：
+
+```
+使用 parse_pdf.sh 帮我解析这个 PDF：/path/to/document.pdf
+```
+
+Claude Code 会自动调用解析脚本并显示结果。
+
+> **注意**：MinerU 官方的 MCP 服务器需要云端 API Key 或本地 FastAPI 服务，不是纯本地 pipeline。如果需要完全本地运行，推荐直接使用命令行或脚本方式。
+
+### 输出结果
+
+解析后会生成：
+
+```
+output/
+└── paper/
+    ├── paper.md              # 最终的 Markdown 文件
+    ├── images/               # 提取的所有图片
+    │   ├── image_001.png
+    │   ├── image_002.png
+    │   └── ...
+    └── auto/                 # 中间处理文件
+        ├── content_list.json
+        ├── middle.json
+        └── model.json
+```
+
+### 常用参数
+
+```bash
+# 启用 OCR（扫描版 PDF）
+python -m mineru.cli.client -p scan.pdf -o ./output -m ocr
+
+# 指定语言
+python -m mineru.cli.client -p paper.pdf -o ./output -l en  # 英文
+python -m mineru.cli.client -p paper.pdf -o ./output -l ch  # 中文
+
+# 只处理特定页面
+python -m mineru.cli.client -p paper.pdf -o ./output -s 0 -e 10  # 第1-10页
+
+# 批量处理
+python -m mineru.cli.client -p ./pdfs_folder -o ./output
+```
+
+### 详细文档
+
+更多使用说明和故障排除，请参考：
+- [快速开始（中文）](mcp/mineru-pdf-mcp/README_CN.md)
+- [本地部署指南](mcp/mineru-pdf-mcp/LOCAL_SETUP.md)
+
 ## 项目结构
 
 ```
@@ -279,6 +363,10 @@ ccblog/
 │   │   ├── src/               # 源代码
 │   │   ├── dist/              # 编译输出
 │   │   └── package.json
+│   ├── mineru-pdf-mcp/        # MinerU PDF 解析服务
+│   │   ├── parse_pdf.sh       # 便捷解析脚本
+│   │   ├── README_CN.md       # 中文快速开始
+│   │   └── LOCAL_SETUP.md     # 详细部署指南
 │   ├── xiaohongshu-mcp/       # 小红书 MCP 服务
 │   └── generate-image-mcp/    # 图片生成 MCP 服务
 ├── scripts/                    # Python 工具脚本
@@ -294,6 +382,8 @@ ccblog/
 - [文颜官网](https://yuzhi.tech/wenyan)
 - [文颜文档](https://yuzhi.tech/docs/wenyan/theme)
 - [wenyan-mcp GitHub](https://github.com/caol64/wenyan-mcp)
+- [MinerU GitHub](https://github.com/opendatalab/MinerU)
+- [MinerU 官方文档](https://opendatalab.github.io/MinerU/)
 - [Claude Code 文档](https://docs.anthropic.com/claude-code)
 - [MCP 协议文档](https://modelcontextprotocol.io/)
 

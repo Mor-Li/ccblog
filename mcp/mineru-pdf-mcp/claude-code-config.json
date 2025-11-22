@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "mineru-pdf": {
+      "command": "/Users/limo/Documents/GithubRepo/ccblog/.venv/bin/python",
+      "args": ["-m", "mineru.cli"],
+      "cwd": "/Users/limo/Documents/GithubRepo/ccblog/mcp/mineru-pdf-mcp",
+      "env": {
+        "MINERU_API_BASE": "https://mineru.net",
+        "MINERU_API_KEY": "your_api_key_here",
+        "OUTPUT_DIR": "./downloads",
+        "USE_LOCAL_API": "false",
+        "LOCAL_MINERU_API_BASE": "http://localhost:8888"
+      }
+    }
+  }
+}

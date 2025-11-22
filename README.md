@@ -192,6 +192,24 @@ Claude Code 会：
 
 所有图片会自动上传到微信公众号素材库。
 
+## 环境变量配置
+
+### MCP 输出限制
+
+**建议：** 将以下环境变量添加到你的 `~/.zshrc` 或 `~/.bashrc` 文件中，以提高 MCP 工具的输出限制：
+
+```bash
+# 增加 MCP 工具响应的最大 token 数量（默认 25000）
+export MAX_MCP_OUTPUT_TOKENS=100000
+```
+
+配置后需要重新加载配置文件：
+```bash
+source ~/.zshrc  # 或 source ~/.bashrc
+```
+
+这对于处理大型文件或复杂输出特别有用。
+
 ## 故障排除
 
 ### MCP 服务未连接

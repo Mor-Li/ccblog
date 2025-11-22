@@ -1,0 +1,20 @@
+{
+  "name": "gemini-openai-mcp",
+  "version": "1.0.0",
+  "description": "Simple MCP server for Gemini 3 via OpenAI-compatible API",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "gemini-openai-mcp": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "openai": "^4.0.0"
+  },
+  "keywords": ["mcp", "gemini", "openai"],
+  "author": "",
+  "license": "MIT"
+}

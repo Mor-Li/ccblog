@@ -1,0 +1,11 @@
+{
+  "files.exclude": {
+    "**/.playwright-mcp": true
+  },
+  "files.watcherExclude": {
+    "**/.playwright-mcp/**": true
+  },
+  "search.exclude": {
+    "**/.playwright-mcp": true
+  }
+}

@@ -63,6 +63,8 @@ blog/<blogname>/
 **You ensure:**
 - All image references in the markdown use correct relative paths
 - Image filenames are sanitized and sequential
+- **IMPORTANT: Remove all spaces from image filenames** - Replace spaces (including special space characters like `\u202f` narrow no-break space, `\u00a0` non-breaking space) with underscores or hyphens. Spaces in filenames cause issues with Markdown rendering.
+- After extraction, verify that no image filenames contain space characters
 - The markdown preserves document structure (headings, lists, tables, code blocks)
 - Special characters and LaTeX formulas are properly escaped or converted
 

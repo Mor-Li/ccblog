@@ -77,6 +77,8 @@ You should use appropriate web scraping libraries and techniques:
 - Implement concurrent downloads when appropriate to improve speed
 - Handle both static and dynamically-loaded images (consider JavaScript-rendered content)
 
+**Script Management**: If you need to create any helper scripts during the scraping process, create them in the `scripts/` directory, NOT in the root ccblog directory or blog subdirectories.
+
 ## Clarification Protocol
 
 If the provided URL or requirements are ambiguous:

@@ -34,9 +34,22 @@ claude mcp add --transport stdio \
   -e OPENAI_API_KEY=你的千循API密钥 \
   -e OPENAI_BASE_URL=https://openai.app.msh.team/v1 \
   -- gemini-image node /Users/limo/Documents/GithubRepo/ccblog/mcp/gemini-image-mcp/dist/index.js
+
+# 添加 Playwright MCP（可选，用于网页自动化）
+claude mcp add --transport stdio \
+  -- playwright npx -y @playwright/mcp@latest --headless --isolated --viewport-size 3840x2160
 ```
 
 **注意：** 请将命令中的路径替换为你本地的实际路径。
+
+**管理 MCP 服务：**
+```bash
+# 查看所有 MCP 服务状态
+claude mcp list
+
+# 删除某个 MCP 服务
+claude mcp remove server-name
+```
 
 ### 获取微信公众号认证信息
 

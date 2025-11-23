@@ -2,6 +2,12 @@
 
 使用 wenyan-mcp 服务，通过 Claude Code 自动读取本地 Markdown 文件并发布到微信公众号。
 
+## 系统架构
+
+![ccblog Architecture](./assets/architecture-diagram.png)
+
+ccblog 是一个完整的 AI 驱动博客生产与发布流程，从内容抓取到微信公众号发布一键完成。
+
 ## 工作原理
 
 ```

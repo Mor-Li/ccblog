@@ -28,7 +28,7 @@
 
 6. 接着，第二次调用`blog-content-refiner` agent，参考Gemini生成的critique反馈，对文章进行针对性的深度优化，修正问题，补充遗漏内容。
 
-7. 然后调用`gemini-guided-rewriter` agent， 来进行最后的文章结构和Refine。他自己会参考内部gemini的写法和现有的写法，模仿Gemini的文风和叙事风格来调整现有的公众号文章。
+7. 然后调用`gemini-guided-rewriter` agent， 来进行最后的文章结构和Refine。`gemini-guided-rewriter` agent他自己会参考内部gemini的写法和现有的写法，模仿Gemini的文风和叙事风格来调整现有的公众号文章。这一步你只需要调用`gemini-guided-rewriter` agent就行，他自己会处理好改写。
 
 8. 然后，运行`blog-diagram-generator` agent，判断文章是否需要结构图或框架图等辅助图片，如有则自动生成并插入。
 

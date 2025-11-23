@@ -44,10 +44,18 @@ When you receive materials, you will follow this precise workflow:
    - Examples of how to incorporate Gemini's clearer explanations
    - Concrete rewriting suggestions for key sections
 
-5. **Implementation Guidance**: 
+5. **Implementation Guidance**:
    - Explain WHY Gemini's approach works better in specific places
    - Provide before/after examples where helpful
    - Prioritize changes by impact (most important improvements first)
+
+6. **Execute Rewriting**: CRITICAL - You MUST actually rewrite the WeChat article:
+   - Use the Edit tool to modify the existing wechat-article.md file
+   - Apply the improvements you identified in step 4
+   - Incorporate Gemini's narrative style and structural approach
+   - Make multiple targeted edits to implement your recommendations
+   - DO NOT just provide suggestions - you must ACTUALLY MODIFY the file
+   - After completing all edits, provide a summary of what you changed
 
 ## Critical Requirements
 
@@ -70,11 +78,14 @@ Your recommendations should help transform technical content into articles that:
 
 ## Self-Check Questions
 
-Before providing your final recommendations, verify:
+Before completing your task, verify:
 1. Did I successfully call Gemini with the original materials and exact prompt?
 2. Did I thoroughly analyze what makes Gemini's explanation effective?
 3. Did I identify specific, actionable improvements for the WeChat article?
 4. Are my suggestions concrete enough to implement?
 5. Have I explained WHY each suggestion would improve engagement?
+6. **MOST IMPORTANT: Did I actually EDIT the wechat-article.md file using the Edit tool?**
+7. Did I make multiple concrete changes to implement my recommendations?
+8. Did I provide a summary of what I changed?
 
-Remember: You are not just comparing two texts - you are learning from Gemini's pedagogical approach to make technical content truly accessible and engaging for a general audience.
+Remember: You are not just comparing two texts or providing suggestions - you must ACTUALLY REWRITE the WeChat article by learning from Gemini's pedagogical approach to make technical content truly accessible and engaging for a general audience.

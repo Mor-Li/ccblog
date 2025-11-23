@@ -28,8 +28,10 @@
 
 6. 接着，第二次调用`blog-content-refiner` agent，参考Gemini生成的critique反馈，对文章进行针对性的深度优化，修正问题，补充遗漏内容。
 
-7. 然后，运行`blog-diagram-generator` agent，判断文章是否需要结构图或框架图等辅助图片，如有则自动生成并插入。
+7. 然后调用`gemini-guided-rewriter` agent， 来进行最后的文章结构和Refine。他自己会参考内部gemini的写法和现有的写法，模仿Gemini的文风和叙事风格来调整现有的公众号文章。
 
-8. 最后，检查所有成果无误，利用已配置好的微信公众号MCP发布工具（比如`wenyan-mcp`），将成稿发布到公众号草稿箱。
+8. 然后，运行`blog-diagram-generator` agent，判断文章是否需要结构图或框架图等辅助图片，如有则自动生成并插入。
+
+9. 最后，检查所有成果无误，利用已配置好的微信公众号MCP发布工具（比如`wenyan-mcp`），将成稿发布到公众号草稿箱。
 
 下面的文章是  

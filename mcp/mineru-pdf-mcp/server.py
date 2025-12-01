@@ -45,8 +45,42 @@ def parse_pdf(pdf_path: str, output_dir: str = "./output", language: str = "en",
         if not os.path.exists(pdf_path):
             return {"success": False, "error": f"PDF 文件不存在: {pdf_path}"}
 
-        # 获取虚拟环境的 Python 路径
-        venv_python = "/home/limo/ccblog/.venv/bin/python"
+        # 自动检测项目根目录和虚拟环境路径
+        # 尝试从当前文件位置向上查找项目根目录
+        current_file = Path(__file__).resolve()
+        project_root = current_file.parent.parent.parent  # mcp/mineru-pdf-mcp/server.py -> project root
+
+        # 检测可能的虚拟环境路径
+        possible_venv_paths = [
+            project_root / ".venv" / "bin" / "python",  # 当前项目的 .venv
+            Path("/home/limo/ccblog/.venv/bin/python"),  # 原始路径 (兼容性)
+            Path("/Users/limo/Documents/GithubRepo/ccblog/.venv/bin/python"),  # macOS 路径
+        ]
+
+        venv_python = None
+        for path in possible_venv_paths:
+            if path.exists():
+                venv_python = str(path)
+                break
+
+        if not venv_python:
+            return {"success": False, "error": "未找到虚拟环境 Python，请检查 .venv 是否存在"}
+
+        # 检测可能的工作目录
+        possible_cwd_paths = [
+            project_root,  # 自动检测的项目根目录
+            Path("/home/limo/ccblog"),  # 原始路径 (兼容性)
+            Path("/Users/limo/Documents/GithubRepo/ccblog"),  # macOS 路径
+        ]
+
+        cwd_path = None
+        for path in possible_cwd_paths:
+            if path.exists() and (path / ".venv").exists():
+                cwd_path = str(path)
+                break
+
+        if not cwd_path:
+            cwd_path = str(project_root)  # 默认使用检测到的项目根目录
 
         # 使用临时目录，因为 MinerU 会创建 pdf_name/auto/ 结构
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -70,7 +104,7 @@ def parse_pdf(pdf_path: str, output_dir: str = "./output", language: str = "en",
                 cmd,
                 capture_output=True,
                 text=True,
-                cwd="/home/limo/ccblog"
+                cwd=cwd_path
             )
 
             if result.returncode == 0:

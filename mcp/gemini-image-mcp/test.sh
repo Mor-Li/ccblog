@@ -3,8 +3,21 @@
 # Test script for gemini-image-mcp
 # This simulates how Claude Code would call the MCP
 
-export OPENAI_API_KEY="***REMOVED-API-KEY***"
-export OPENAI_BASE_URL="your-openai-compatible-api-url"
+# Please set these environment variables before running this script:
+# export OPENAI_API_KEY="your-api-key-here"
+# export OPENAI_BASE_URL="your-openai-compatible-api-url"
+
+if [ -z "$OPENAI_API_KEY" ]; then
+    echo "Error: OPENAI_API_KEY environment variable is not set"
+    echo "Please run: export OPENAI_API_KEY=\"your-api-key-here\""
+    exit 1
+fi
+
+if [ -z "$OPENAI_BASE_URL" ]; then
+    echo "Error: OPENAI_BASE_URL environment variable is not set"
+    echo "Please run: export OPENAI_BASE_URL=\"your-openai-compatible-api-url\""
+    exit 1
+fi
 
 echo "Testing Gemini Image MCP..."
 echo ""
@@ -29,7 +42,7 @@ cat <<CONFIG
         "$(pwd)/dist/index.js"
       ],
       "env": {
-        "OPENAI_API_KEY": "***REMOVED-API-KEY***",
+        "OPENAI_API_KEY": "your-api-key-here",
         "OPENAI_BASE_URL": "your-openai-compatible-api-url"
       }
     }

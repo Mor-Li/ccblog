@@ -16,7 +16,7 @@ import {
     ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { getGzhContent } from "@wenyan-md/core/wrapper";
-import { publishToDraft } from "@wenyan-md/core/publish";
+import { publishToDraft } from "./publish.js";  // Use custom publish module with axios + form-data
 import { themes, Theme } from "@wenyan-md/core/theme";
 import * as fs from "fs";
 import * as path from "path";

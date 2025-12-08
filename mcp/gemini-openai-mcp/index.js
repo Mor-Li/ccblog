@@ -10,10 +10,21 @@ import OpenAI from 'openai';
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { resolve, dirname } from 'path';
 
+// Validate required environment variables
+if (!process.env.OPENAI_API_KEY) {
+  console.error('Error: OPENAI_API_KEY environment variable is required');
+  process.exit(1);
+}
+
+if (!process.env.OPENAI_BASE_URL) {
+  console.error('Error: OPENAI_BASE_URL environment variable is required');
+  process.exit(1);
+}
+
 // Initialize OpenAI client with custom base URL
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_BASE_URL || 'your-openai-compatible-api-url',
+  baseURL: process.env.OPENAI_BASE_URL,
 });
 
 const MODEL = process.env.GEMINI_MODEL || 'gemini-3-pro-preview';

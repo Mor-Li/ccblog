@@ -13,11 +13,16 @@ interface GenerateImageArgs {
 }
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || process.env.QIANXUN_API_KEY;
-const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL || "your-openai-compatible-api-url";
+const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL;
 const MODEL = "gemini-3-pro-image-preview";
 
 if (!OPENAI_API_KEY) {
   console.error("Error: OPENAI_API_KEY or QIANXUN_API_KEY environment variable is required");
+  process.exit(1);
+}
+
+if (!OPENAI_BASE_URL) {
+  console.error("Error: OPENAI_BASE_URL environment variable is required");
   process.exit(1);
 }
 

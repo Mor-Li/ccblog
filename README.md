@@ -481,6 +481,10 @@ ccblog/
 └── mcp-config-example.json     # MCP 配置示例
 ```
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=mor-li/ccblog&type=date&legend=top-left)](https://www.star-history.com/#mor-li/ccblog&type=date&legend=top-left)
+
 ## 相关资源
 
 - [文颜官网](https://yuzhi.tech/wenyan)

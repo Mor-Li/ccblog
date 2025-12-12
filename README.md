@@ -1,12 +1,5 @@
 # ccblog - 通过 Claude Code 自动发布博客到微信公众号
 
-<div align="center">
-  <img src="./assets/wechat-official-qr.png" alt="微信公众号二维码" width="200">
-  <p><strong>扫码关注公众号，查看 AI 生成的深度技术解读</strong></p>
-</div>
-
----
-
 使用 wenyan-mcp 服务，通过 Claude Code 自动读取本地 Markdown 文件并发布到微信公众号。
 
 ## 系统架构
@@ -24,6 +17,10 @@ ccblog 是一个完整的 AI 驱动博客生产与发布流程，从内容抓取
 **对比示例：** 我最近发现量子位和我都解读了同一篇论文。看完他们的版本，我依然云里雾里，不知所云；而通过我的 pipeline 生成的版本，循序渐进、图文并茂，即使是非专业读者也能真正理解论文的核心创新点。
 ![Blog Comparison](./assets/comparison.png)
 
+<div align="center">
+  <img src="./assets/wechat-official-qr.png" alt="微信公众号二维码" width="200">
+  <p><strong>扫码关注公众号，查看 AI 生成的深度技术解读</strong></p>
+</div>
 
 这不是偶然——**这是系统性的质量差距**。
 

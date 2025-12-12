@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ccblog - AI 驱动的微信公众号自动发布系统</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --dark-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a6a;
+            --text-muted: #8888a8;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 15% 25%, rgba(102, 126, 234, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 75%, rgba(118, 75, 162, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(79, 172, 254, 0.08) 0%, transparent 50%);
+            z-index: -1;
+            animation: bgPulse 15s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 0 40px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-size: 4.5rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+        }
+
+        h1 {
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.35rem);
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-weight: 400;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* QR Code Section */
+        .qr-section {
+            background: var(--glass-bg);
+            border-radius: 24px;
+            padding: 48px 40px;
+            margin: 40px auto;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 20px;
+        }
+
+        .qr-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .qr-subtext {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* Architecture Section */
+        .architecture-section {
+            margin: 60px 0;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 3.5vw, 2.2rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 32px;
+            color: var(--text-primary);
+        }
+
+        .architecture-img {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            display: block;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Features Grid */
+        .features-section {
+            margin: 80px 0;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .feature {
+            background: var(--glass-bg);
+            border-radius: 20px;
+            padding: 36px 28px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .feature:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            font-size: 2.8rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .feature h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .feature p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Pipeline Section */
+        .pipeline-section {
+            background: var(--glass-bg);
+            border-radius: 24px;
+            padding: 48px 40px;
+            margin: 60px 0;
+            box-shadow: var(--shadow-md);
+            animation: fadeInUp 0.8s ease-out 0.5s both;
+        }
+
+        .pipeline-flow {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .pipeline-step {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .pipeline-arrow {
+            color: var(--text-muted);
+            font-size: 1.5rem;
+        }
+
+        /* Comparison Section */
+        .comparison-section {
+            margin: 80px 0;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .comparison-img {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            display: block;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* GitHub Button */
+        .github-section {
+            text-align: center;
+            margin: 60px 0 40px;
+            animation: fadeInUp 0.8s ease-out 0.7s both;
+        }
+
+        .github-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 44px;
+            background: var(--dark-gradient);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 14px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .github-button:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 40px 0 20px;
+            }
+
+            .qr-section {
+                padding: 36px 24px;
+                margin: 30px 16px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .pipeline-section {
+                padding: 36px 24px;
+            }
+
+            .pipeline-flow {
+                flex-direction: column;
+            }
+
+            .pipeline-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="logo">📝</div>
+            <h1>ccblog</h1>
+            <p class="subtitle">通过 Claude Code 自动发布博客到微信公众号<br>AI 驱动的多 Agent 深度内容生成系统</p>
+        </section>
+
+        <!-- QR Code Section -->
+        <section class="qr-section">
+            <img src="assets/wechat-official-qr.png" alt="微信公众号二维码" class="qr-code">
+            <p class="qr-text">扫码关注公众号</p>
+            <p class="qr-subtext">查看 AI 生成的深度技术解读文章</p>
+        </section>
+
+        <!-- Architecture Section -->
+        <section class="architecture-section">
+            <h2 class="section-title">系统架构</h2>
+            <img src="assets/architecture-diagram.png" alt="ccblog 系统架构" class="architecture-img">
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <h2 class="section-title">核心优势</h2>
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">🤖</span>
+                    <h3>多 Agent Pipeline</h3>
+                    <p>8 个专业 Agent 协作：PDF 解析、文本抓取、博客写作、AI 评审、内容优化</p>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🧠</span>
+                    <h3>顶级模型驱动</h3>
+                    <p>调用 Claude Sonnet 4.5 和 Gemini 3 Pro Thinking，确保内容质量</p>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🔄</span>
+                    <h3>多轮优化</h3>
+                    <p>5 轮交叉验证和优化，从基础生成到批判性审查再到框架重构</p>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">📊</span>
+                    <h3>图文并茂</h3>
+                    <p>自动提取论文图表，生成补充说明图表，让复杂内容通俗易懂</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pipeline Section -->
+        <section class="pipeline-section">
+            <h2 class="section-title">工作流程</h2>
+            <div class="pipeline-flow">
+                <span class="pipeline-step">PDF/网页</span>
+                <span class="pipeline-arrow">→</span>
+                <span class="pipeline-step">MinerU 解析</span>
+                <span class="pipeline-arrow">→</span>
+                <span class="pipeline-step">Claude 写作</span>
+                <span class="pipeline-arrow">→</span>
+                <span class="pipeline-step">Gemini 评审</span>
+                <span class="pipeline-arrow">→</span>
+                <span class="pipeline-step">内容优化</span>
+                <span class="pipeline-arrow">→</span>
+                <span class="pipeline-step">微信发布</span>
+            </div>
+        </section>
+
+        <!-- Comparison Section -->
+        <section class="comparison-section">
+            <h2 class="section-title">质量对比</h2>
+            <img src="assets/comparison.png" alt="内容质量对比" class="comparison-img">
+        </section>
+
+        <!-- GitHub Section -->
+        <section class="github-section">
+            <a href="https://github.com/mor-li/ccblog" target="_blank" class="github-button">
+                <span>⭐</span>
+                <span>Star on GitHub</span>
+            </a>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Made with Claude Code | Apache License 2.0</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,5 +1,12 @@
 # ccblog - 通过 Claude Code 自动发布博客到微信公众号
 
+<div align="center">
+  <img src="./assets/wechat-official-qr.png" alt="微信公众号二维码" width="200">
+  <p><strong>扫码关注公众号，查看 AI 生成的深度技术解读</strong></p>
+</div>
+
+---
+
 使用 wenyan-mcp 服务，通过 Claude Code 自动读取本地 Markdown 文件并发布到微信公众号。
 
 ## 系统架构

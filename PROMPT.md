@@ -23,6 +23,9 @@
    **情况 C：如果输入的是一段我和AI的聊天记录**（比如复制粘贴的一段问答对话，或者本地的md文件）：
    - 此时就不用爬取了，直接进入下面的步骤。
 
+   **情况 D：如果输入的是openreview的review链接,如https://openreview.net/forum?id=FOnAdLo0tM**：
+   - 此时就需要调用`blog-text-scraper` agent，来抓取openreview的review内容，并保存至子文件夹的review.md文件中。
+
 
 3. 待上述内容抓取完成后，调用 `wechat-blog-writer` agent，基于该文件夹内的图片和正文内容，撰写一篇微信公众号解读文章，并保存在这个目录下。如果我下面给你了多个文件，那就说明这是一篇文章的不同版本，例如知乎blog和arxiv版本，你都需要读，可以按照arxiv的整体结构，加上blog中的解读内容。
 
@@ -34,7 +37,9 @@
 
 7. 然后调用`gemini-guided-rewriter` agent， 来进行最后的文章结构和Refine。`gemini-guided-rewriter` agent他自己会参考内部gemini的写法和现有的写法，模仿Gemini的文风和叙事风格来调整现有的公众号文章。这一步你只需要调用`gemini-guided-rewriter` agent就行，他自己会处理好改写。
 
-8. 然后，运行`blog-diagram-generator` agent，判断文章是否需要结构图或框架图等辅助图片，如有则自动生成并插入。如果传入的是一篇学术论文，那么你需要运行`paper-critic`来对paper进行锐评三则，这个agent会在文末添加三点pape人的锐评。
+8. 如果下面传入了openreview的review链接，并且你刚开始也调用了`blog-text-scraper` agent来抓取了openreview的review内容，那么你需要再调用一个tasktool，召唤subagent来补充review阶段的讨论，在文末补充审稿人的意见是什么，以及作者怎么回复的审稿人提出的各个点。
+
+8. 然后，运行`blog-diagram-generator` agent，判断文章是否需要结构图或框架图等辅助图片，如有则自动生成并插入。如果传入的是一篇学术论文，那么你需要运行`paper-critic`来对paper进行锐评三则，这个agent会在文末添加三点对paper的锐评。
 
 9. 最后，检查所有成果无误，重点关注最后文章最后的参考文献是否出现了幻觉。是否真的是可以点击的。尤其是论文的链接和论文的title，如果需要修改可以针对这些修改。利用已配置好的微信公众号MCP发布工具（比如`wenyan-mcp`），将成稿发布到公众号草稿箱。
 

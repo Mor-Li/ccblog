@@ -108,11 +108,20 @@ def parse_pdf(pdf_path: str, output_dir: str = "./output", language: str = "en",
             )
 
             if result.returncode == 0:
-                # MinerU 会创建 pdf_name/mode/ 结构，我们需要将内容移动到用户指定的目录
+                # MinerU 会创建 pdf_name/{mode}/ 或 pdf_name/hybrid_{mode}/ 结构
+                # 需要找到实际的输出目录
                 pdf_name = Path(pdf_path).stem
-                mineru_output = Path(temp_dir) / pdf_name / mode
+                pdf_dir = Path(temp_dir) / pdf_name
 
-                if mineru_output.exists():
+                # 查找实际的输出目录（可能是 auto, hybrid_auto, txt, ocr 等）
+                mineru_output = None
+                if pdf_dir.exists():
+                    for subdir in pdf_dir.iterdir():
+                        if subdir.is_dir():
+                            mineru_output = subdir
+                            break
+
+                if mineru_output and mineru_output.exists():
                     # 将 auto/ 目录下的所有内容移动到用户指定的输出目录
                     target_dir = Path(output_dir)
                     target_dir.mkdir(parents=True, exist_ok=True)

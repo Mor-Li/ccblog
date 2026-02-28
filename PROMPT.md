@@ -26,8 +26,17 @@
    **情况 D：如果输入的是openreview的review链接,如https://openreview.net/forum?id=FOnAdLo0tM**：
    - 此时就需要调用`blog-text-scraper` agent，来抓取openreview的review内容，并保存至子文件夹的review.md文件中。
 
+   **情况 E：如果输入的是 GitHub 仓库链接**（满足以下任一条件）：
+   - URL 包含 `github.com/用户名/仓库名` 的格式
+   - URL 指向 GitHub/GitLab 等平台上的开源项目
+   - 用户明确说明想要介绍某个开源项目或代码仓库
 
-3. 待上述内容抓取完成后，调用 `wechat-blog-writer` agent，基于该文件夹内的图片和正文内容，撰写一篇微信公众号解读文章，并保存在这个目录下。如果我下面给你了多个文件，那就说明这是一篇文章的不同版本，例如知乎blog和arxiv版本，你都需要读，可以按照arxiv的整体结构，加上blog中的解读内容。
+   **处理方式**：
+   - 直接调用 `repo-explorer` agent，克隆仓库并进行深度代码分析，生成技术分析报告（repo_analysis.md）和内容文件（content.md），保存至子文件夹。
+   - ⚠️ **跳过网页抓取步骤**，直接进入步骤 3（博客撰写）。
+
+
+3. 待上述内容抓取完成后，调用 `wechat-blog-writer` agent，基于该文件夹内的图片和正文内容，撰写一篇微信公众号解读文章，并保存在这个目录下。如果我下面给你了多个文件，那就说明这是一篇文章的不同版本，例如知乎blog和arxiv版本，你都需要读，可以按照arxiv的整体结构，加上blog中的解读内容。如果是 GitHub 仓库（情况 E），则需要同时读取 content.md 和 repo_analysis.md，以 repo_analysis.md 的结构和分析为主体，结合 README 内容和仓库中的代码示例来撰写文章。
 
 4. 初稿完成后，第一次调用`blog-content-refiner` agent，对文章进行初步优化和润色，增强易读性、流畅度，发现不易理解处会补充解释。
 

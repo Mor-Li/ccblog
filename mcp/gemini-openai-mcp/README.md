@@ -22,7 +22,7 @@ Set environment variables in your shell:
 ```bash
 export OPENAI_API_KEY=your-api-key
 export OPENAI_BASE_URL=your-openai-compatible-api-url
-export GEMINI_MODEL=gemini-3-pro-preview  # optional, default value
+export GEMINI_MODEL=gemini-3.1-pro-preview  # optional, default value
 ```
 
 ## Add to Claude Code
@@ -33,7 +33,7 @@ Use the `claude mcp add` command:
 claude mcp add --transport stdio \
   -e OPENAI_API_KEY=你的千循API密钥 \
   -e OPENAI_BASE_URL=your-openai-compatible-api-url \
-  -e GEMINI_MODEL=gemini-3-pro-preview \
+  -e GEMINI_MODEL=gemini-3.1-pro-preview \
   -- gemini node /home/limo/ccblog/mcp/gemini-openai-mcp/index.js
 ```
 

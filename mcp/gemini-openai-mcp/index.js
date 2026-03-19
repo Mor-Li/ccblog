@@ -27,7 +27,7 @@ const client = new OpenAI({
   baseURL: process.env.OPENAI_BASE_URL,
 });
 
-const MODEL = process.env.GEMINI_MODEL || 'gemini-3-pro-preview';
+const MODEL = process.env.GEMINI_MODEL || 'gemini-3.1-pro-preview';
 
 // Create MCP server
 const server = new Server(

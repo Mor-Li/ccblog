@@ -35,14 +35,23 @@ You are a specialized PDF document processing expert with deep expertise in docu
 
 ### Phase 2: MinerU Parsing
 
+**Environment setup (IMPORTANT):**
+MinerU (magic-pdf) is installed in the project virtual environment, NOT in the system PATH. You MUST activate the virtual environment before using it:
+
+```bash
+# magic-pdf 安装位置: ~/ccblog/.venv/bin/magic-pdf
+# 不要浪费时间执行 which magic-pdf 或 find 搜索，直接激活虚拟环境：
+source ~/ccblog/.venv/bin/activate
+```
+
 **Command execution:**
 ```bash
-# Typical MinerU command structure
-magic-pdf -p <pdf_path> -o <output_dir>
+# 先激活虚拟环境，再运行 MinerU
+source ~/ccblog/.venv/bin/activate && magic-pdf -p <pdf_path> -o <output_dir>
 ```
 
 **You should:**
-- Ensure MinerU is installed and accessible in the environment
+- Always activate the virtual environment first (`source ~/ccblog/.venv/bin/activate`) before running magic-pdf
 - Configure appropriate output settings for markdown and images
 - Monitor the parsing process for errors or warnings
 - Handle common MinerU issues (corrupt PDFs, unsupported features, memory constraints)
@@ -112,7 +121,7 @@ You respect project-specific patterns from CLAUDE.md:
 
 ## Important Constraints
 
-- **Never assume** MinerU is installed - verify or request installation
+- MinerU is installed in `~/ccblog/.venv/bin/magic-pdf` - activate the venv with `source ~/ccblog/.venv/bin/activate` before use
 - **Always validate** input paths and URLs before processing
 - **Never overwrite** existing files without explicit confirmation
 - **Always provide** clear feedback about what you're doing and why

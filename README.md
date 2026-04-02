@@ -115,9 +115,6 @@ claude mcp add --transport stdio \
 claude mcp add --transport stdio \
   -- playwright npx -y @playwright/mcp@latest --headless --isolated --viewport-size 3840x2160
 
-# 添加 MinerU PDF 解析 MCP（可选，用于 PDF 转 Markdown）
-claude mcp add --transport stdio \
-  -- mineru-pdf /Users/limo/Documents/GithubRepo/ccblog/.venv/bin/python /Users/limo/Documents/GithubRepo/ccblog/mcp/mineru-pdf-mcp/server.py
 ```
 
 **注意：** 请将命令中的路径替换为你本地的实际路径。
@@ -367,93 +364,38 @@ npm install -g @wenyan-md/mcp
 }
 ```
 
-## PDF 解析工具（MinerU）
+## PDF 解析工具（MinerU Cloud API）
+
+PDF 解析通过 **MinerU Cloud API** 完成，无需本地安装任何依赖。
 
 ### 功能特性
 
-MinerU 是一个本地运行的 PDF 解析工具，可以：
-- ✅ **完全本地运行**，无需 API Key
+- ✅ **Cloud API 解析**，通过 `$MINERU_API_TOKEN` 认证
 - ✅ **PDF 转 Markdown**，保留格式和结构
 - ✅ **自动提取图片**，保存为独立文件
 - ✅ **支持公式识别**（LaTeX 格式）
-- ✅ **表格提取**，转换为 Markdown 表格
-- ✅ **多语言 OCR**（中文、英文、日语等）
+- ✅ **表格提取**
+- ✅ **支持 VLM 模型**，论文公式和表格效果最好
 
 ### 使用方法
 
-#### 方式一：直接使用命令行
+在 Claude Code 中直接说：
+
+```
+帮我解析这个 PDF 为 Markdown：https://arxiv.org/pdf/2301.12345.pdf，保存到 blog/research-paper/
+```
+
+`pdf-parser-mineru` Agent 会自动通过 MinerU Cloud API 解析，下载结果并整理到指定目录。
+
+### 配置
+
+在 `~/.zshrc` 中设置 API Token：
 
 ```bash
-# 激活环境
-cd /Users/limo/Documents/GithubRepo/ccblog
-source .venv/bin/activate
-
-# 首次使用：下载模型（约 2-3GB，只需一次）
-python -m mineru.cli.models_download
-
-# 解析单个 PDF
-python -m mineru.cli.client -p /path/to/paper.pdf -o ./output -l en
-
-# 使用便捷脚本
-./mcp/mineru-pdf-mcp/parse_pdf.sh /path/to/paper.pdf ./output
+export MINERU_API_TOKEN="your_token_here"
 ```
 
-#### 方式二：通过 Claude Code MCP（推荐）
-
-配置好 MCP 后，直接在 Claude Code 中说：
-
-```
-帮我解析这个 PDF 为 Markdown：/path/to/document.pdf
-```
-
-或
-
-```
-使用 parse_pdf 工具解析这个论文，输出到 ./output 目录
-```
-
-Claude Code 会自动调用 MinerU 本地解析，无需任何 API Key。
-
-### 输出结果
-
-解析后会生成：
-
-```
-output/
-└── paper/
-    ├── paper.md              # 最终的 Markdown 文件
-    ├── images/               # 提取的所有图片
-    │   ├── image_001.png
-    │   ├── image_002.png
-    │   └── ...
-    └── auto/                 # 中间处理文件
-        ├── content_list.json
-        ├── middle.json
-        └── model.json
-```
-
-### 常用参数
-
-```bash
-# 启用 OCR（扫描版 PDF）
-python -m mineru.cli.client -p scan.pdf -o ./output -m ocr
-
-# 指定语言
-python -m mineru.cli.client -p paper.pdf -o ./output -l en  # 英文
-python -m mineru.cli.client -p paper.pdf -o ./output -l ch  # 中文
-
-# 只处理特定页面
-python -m mineru.cli.client -p paper.pdf -o ./output -s 0 -e 10  # 第1-10页
-
-# 批量处理
-python -m mineru.cli.client -p ./pdfs_folder -o ./output
-```
-
-### 详细文档
-
-更多使用说明和故障排除，请参考：
-- [快速开始（中文）](mcp/mineru-pdf-mcp/README_CN.md)
-- [本地部署指南](mcp/mineru-pdf-mcp/LOCAL_SETUP.md)
+Token 获取：https://mineru.net/apiManage/token
 
 ## 项目结构
 
@@ -462,22 +404,11 @@ ccblog/
 ├── blog/                       # 博客文章目录
 ├── mcp/                        # MCP 服务目录
 │   ├── wenyan-mcp/            # 文颜 MCP 服务（微信公众号发布）
-│   │   ├── src/               # 源代码
-│   │   ├── dist/              # 编译输出
-│   │   └── package.json
-│   ├── mineru-pdf-mcp/        # MinerU PDF 解析服务
-│   │   ├── server.py          # MCP 服务器（完全本地运行）
-│   │   ├── parse_pdf.sh       # 便捷解析脚本
-│   │   ├── README_CN.md       # 中文快速开始
-│   │   └── LOCAL_SETUP.md     # 详细部署指南
-│   ├── xiaohongshu-mcp/       # 小红书 MCP 服务
-│   └── generate-image-mcp/    # 图片生成 MCP 服务
+│   ├── gemini-openai-mcp/     # Gemini MCP 服务
+│   └── gemini-image-mcp/      # Gemini 图片生成 MCP 服务
+├── .claude/agents/             # Claude Code Agent 定义
 ├── scripts/                    # Python 工具脚本
-│   ├── download_arxiv_images.py
-│   ├── extract_arxiv_images.py
-│   ├── scrape_arxiv_images.py
-│   └── scrape_arxiv_playwright.py
-└── mcp-config-example.json     # MCP 配置示例
+└── assets/                     # 静态资源
 ```
 
 ## Star History
@@ -501,7 +432,7 @@ Apache License Version 2.0
 ## 致谢
 
 - [文颜 MCP](https://github.com/caol64/wenyan-mcp) - 微信公众号排版工具
-- [小红书 MCP](https://github.com/xpzouying/xiaohongshu-mcp) - 小红书发布工具
+- [MinerU Cloud API](https://mineru.net) - PDF 解析服务
 
 ---
 

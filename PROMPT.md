@@ -52,4 +52,17 @@
 
 9. 最后，检查所有成果无误，重点关注最后文章最后的参考文献是否出现了幻觉。是否真的是可以点击的。尤其是论文的链接和论文的title，如果需要修改可以针对这些修改。利用已配置好的微信公众号MCP发布工具（比如`wenyan-mcp`），将成稿发布到公众号草稿箱。
 
+10. **同步到墨哥的 MoonAGI 飞书 Wiki**（infostream branch 专属）：发完公众号草稿后，调用 infostream 项目的一键飞书同步脚本，把同一篇文章也同步到飞书 Wiki + 推卡片到「业界动态」群。
+
+    ```bash
+    python3 ~/Documents/GithubRepo/metabot-workspace/infostream/scripts/publish-ccblog-to-feishu.py \
+        "$(pwd)/blog/<本次任务的子文件夹名>" \
+        --source-tag paper
+    ```
+
+    - `--source-tag` 根据内容类型选：`paper` / `ai-blog` / `finance` / `policy` / `twitter` / `tsinghua`，默认 `paper`
+    - 脚本自动处理：创建 Wiki 子节点 + 图片用 `+media-insert` 逐张插入 + 飞书群发卡片
+    - 其他选项 `--help` 查看
+    - 完成后脚本会打印飞书文档 URL；任务全部结束
+
 下面的文章是  

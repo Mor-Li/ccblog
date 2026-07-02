@@ -97,6 +97,12 @@ When diagrams are generated:
 - Add brief captions if helpful for context
 - Ensure image paths are correct relative to the blog post location
 
+**⚠️ Markdown image alt text rules (WeChat publishing constraint):**
+- Keep alt text **short and simple** (ideally ≤ 20 characters, 一句话描述即可)
+- **Never use double quotes `"` inside alt text** — they break Markdown parsing in wenyan-mcp, causing the image to render as a broken local path instead of being uploaded to WeChat CDN
+- Bad: `![图示：蓝线 κ(s) 从 1.0 衰减至 κ_min=0.1，两线在"Control Handoff"处交叉](img.png)`
+- Good: `![ATOD 退火调度示意图](img.png)`
+
 ### 7. Final Decision Protocol
 
 Before generating any diagram, explicitly state:

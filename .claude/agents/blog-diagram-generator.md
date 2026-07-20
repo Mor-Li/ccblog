@@ -1,7 +1,7 @@
 ---
 name: blog-diagram-generator
 description: Use this agent when you need to analyze blog posts and generate framework diagrams to enhance understanding of complex technical concepts. This agent should be called proactively after completing blog content work or when reviewing technical articles. Examples:\n\n<example>\nContext: User has just finished writing a blog post about a new machine learning architecture.\nuser: "I've just finished writing a blog post about the Transformer architecture in blog/ml/transformer-explained.md"\nassistant: "Let me use the Task tool to launch the blog-diagram-generator agent to review the content and determine if framework diagrams would enhance understanding."\n<commentary>\nThe blog post involves complex architecture concepts, so the blog-diagram-generator agent should analyze it and potentially generate architecture diagrams.\n</commentary>\n</example>\n\n<example>\nContext: User is working on converting a WeChat article to blog format.\nuser: "Please convert the WeChat article about distributed systems to blog format"\nassistant: "I'll convert the article to blog format."\n<conversion work completed>\nassistant: "Now let me use the blog-diagram-generator agent to analyze the content and see if framework diagrams would help clarify the distributed system concepts."\n<commentary>\nAfter completing the conversion, proactively use the blog-diagram-generator agent to enhance the technical content with appropriate diagrams.\n</commentary>\n</example>\n\n<example>\nContext: User mentions a blog post that needs review.\nuser: "Can you check if my blog post in blog/ai/llm-training.md is complete?"\nassistant: "Let me review the content first..."\n<review completed>\nassistant: "The content looks good. Now I'll use the blog-diagram-generator agent to determine if framework diagrams would enhance understanding of the LLM training pipeline."\n<commentary>\nProactively use the agent to assess diagram needs even when not explicitly requested.\n</commentary>\n</example>
-model: sonnet
+model: opus
 color: orange
 ---
 
@@ -71,13 +71,20 @@ When you decide generation is beneficial:
 
 ### 4. MCP Tool Usage
 
-Use the Gemini Image MCP tool to generate diagrams with detailed prompts that:
+生图工具是 `mcp__gemini-image__generate_image`（底层模型 Gemini 3 Pro Image，即 Nano Banana 2 / Pro），接受 `prompt` 和可选 `save_path` 两个参数。写 prompt 时：
 - Specify diagram type explicitly (e.g., "technical architecture diagram", "ML model structure diagram")
 - Include all component names and relationships from the article
 - Request professional, technical documentation style
 - Specify the aspect ratio and composition appropriate for technical content
 
 **Save generated images to**: The same directory as the blog post (`blog/subfolder/`)
+
+**⚠️ 生成后必须验证图真的生成成功——这是硬性要求，不允许「假装生成了」：**
+- 调用工具后先看返回：若是 `Error generating image` / `fetch failed` / `No image found` 之类，说明生图失败，别当成功。
+- 再用 shell 确认产出文件**确实存在、非 0 字节、且是真实图片**（`file <path>` 要显示 PNG/JPEG，而不是空文件或 HTML 报错页）。
+- 然后像最终读者一样 `Read` 这张图看一眼，确认内容正确、不是乱码 / 纯色块 / 文字糊成一团，才决定采用。
+- **绝对不要在生图失败时，仍往文章里写一个指向不存在文件的图片引用**——那会让公众号发布时图片渲染成本地路径、直接发布失败。
+- 这个生图 MCP 依赖外部 endpoint，可能因配置或网络而不可用。一旦连不通或反复失败，按优先级**降级**：① 复用文章已有配图，或从原始论文 PDF 里裁切真实图；② 用 matplotlib 本地画流程图 / 架构图（中文字体用 Hiragino Sans GB，避免豆腐块）；③ 实在不行就如实说明「生图不可用、本次跳过」，绝不静默失败或伪造图片。
 
 ### 5. Cover Image Requirement
 

@@ -14,7 +14,7 @@ interface GenerateImageArgs {
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || process.env.QIANXUN_API_KEY;
 const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL;
-const MODEL = "gemini-3-pro-image-preview";
+const MODEL = process.env.GEMINI_IMAGE_MODEL || "gemini-3-pro-image-preview";
 
 if (!OPENAI_API_KEY) {
   console.error("Error: OPENAI_API_KEY or QIANXUN_API_KEY environment variable is required");
@@ -50,21 +50,46 @@ async function generateImage(prompt: string, savePath?: string): Promise<string>
   }
 
   const data = await response.json();
-  const content = data.choices?.[0]?.message?.content;
+  const message = data.choices?.[0]?.message;
 
-  if (!content) {
-    throw new Error("No image generated in response");
+  if (!message) {
+    throw new Error("No message in response");
   }
 
-  // Extract base64 image from markdown format: ![image](data:image/png;base64,...)
-  const imageMatch = content.match(/!\[.*?\]\(data:image\/(png|jpeg|jpg);base64,([^)]+)\)/);
+  // Image responses come in different shapes depending on the provider:
+  //   1. OpenAI-compatible multimodal: message.images[0].image_url.url = "data:image/...;base64,..."
+  //   2. Legacy: a markdown image embedded directly in the content string
+  let imageFormat: string | undefined;
+  let base64Data: string | undefined;
 
-  if (!imageMatch) {
-    throw new Error("No base64 image found in response");
+  // Format 1: structured images array (OpenAI-compatible multimodal, the common case)
+  const images = message.images;
+  if (Array.isArray(images) && images.length > 0) {
+    const url: string | undefined = images[0]?.image_url?.url;
+    if (typeof url === "string") {
+      const m = url.match(/^data:image\/(png|jpeg|jpg|webp);base64,(.+)$/s);
+      if (m) {
+        imageFormat = m[1] === "jpeg" ? "jpg" : m[1];
+        base64Data = m[2];
+      }
+    }
   }
 
-  const imageFormat = imageMatch[1];
-  const base64Data = imageMatch[2];
+  // Format 2 (fallback): markdown-embedded base64 inside the content string
+  if (!base64Data) {
+    const content = message.content;
+    if (typeof content === "string") {
+      const m = content.match(/!\[.*?\]\(data:image\/(png|jpeg|jpg);base64,([^)]+)\)/);
+      if (m) {
+        imageFormat = m[1] === "jpeg" ? "jpg" : m[1];
+        base64Data = m[2];
+      }
+    }
+  }
+
+  if (!base64Data || !imageFormat) {
+    throw new Error("No image found in response (checked message.images[].image_url and content markdown)");
+  }
 
   // Save to file if path provided
   if (savePath) {

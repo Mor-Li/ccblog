@@ -69,22 +69,25 @@ When you decide generation is beneficial:
 - Algorithm flowcharts: visualizing computational processes
 - Model structure diagrams: representing neural network or ML model architectures
 
-### 4. MCP Tool Usage
+### 4. 生图：用 gen_image.py 脚本（不走 MCP）
 
-生图工具是 `mcp__gemini-image__generate_image`（底层模型 Gemini 3 Pro Image，即 Nano Banana 2 / Pro），接受 `prompt` 和可选 `save_path` 两个参数。写 prompt 时：
-- Specify diagram type explicitly (e.g., "technical architecture diagram", "ML model structure diagram")
-- Include all component names and relationships from the article
-- Request professional, technical documentation style
-- Specify the aspect ratio and composition appropriate for technical content
+生图用仓库内的独立 python 脚本 `mcp/gemini-image-mcp/gen_image.py`（纯 stdlib，底层默认模型 Gemini 3 Pro Image，即 Nano Banana 2 / Pro）。用法：
 
-**Save generated images to**: The same directory as the blog post (`blog/subfolder/`)
+```bash
+python3 /Users/limo/Documents/GithubRepo/ccblog/mcp/gemini-image-mcp/gen_image.py \
+  -p "英文的详细画面描述" -o /绝对路径/blog/<子目录>/<图名>.png
+```
 
-**⚠️ 生成后必须验证图真的生成成功——这是硬性要求，不允许「假装生成了」：**
-- 调用工具后先看返回：若是 `Error generating image` / `fetch failed` / `No image found` 之类，说明生图失败，别当成功。
-- 再用 shell 确认产出文件**确实存在、非 0 字节、且是真实图片**（`file <path>` 要显示 PNG/JPEG，而不是空文件或 HTML 报错页）。
+- endpoint 和 key 脚本会自动从环境变量 / 同目录 `.env` 读取，你不用操心；成功后 stdout 打印最终图片路径，stderr 打印分辨率与大小。可选 `--model gemini-2.5-flash-image` 切换模型。
+- 写 prompt 时：明确图类型（"technical architecture diagram"、"ML model structure diagram" 等）、带上文章里真实的组件名和关系、要求专业的技术文档风格、指定合适的构图/比例。**尽量用英文写 prompt，且图里文字少而精**——文字太多模型容易糊成一团。
+- **图片存到博客同目录**（`blog/subfolder/`）。
+
+**⚠️ 生成后必须验证图真的生成成功——硬性要求，不允许「假装生成了」：**
+- 先看脚本退出码和 stderr：若报 `❌ ...`（请求被拒 / 重试耗尽 / 响应里没有图片 等），说明失败，别当成功。
+- 再用 `file <path>` 确认产出**确实存在、非 0 字节、是真实 PNG/JPEG**（不是空文件或报错文本）。
 - 然后像最终读者一样 `Read` 这张图看一眼，确认内容正确、不是乱码 / 纯色块 / 文字糊成一团，才决定采用。
-- **绝对不要在生图失败时，仍往文章里写一个指向不存在文件的图片引用**——那会让公众号发布时图片渲染成本地路径、直接发布失败。
-- 这个生图 MCP 依赖外部 endpoint，可能因配置或网络而不可用。一旦连不通或反复失败，按优先级**降级**：① 复用文章已有配图，或从原始论文 PDF 里裁切真实图；② 用 matplotlib 本地画流程图 / 架构图（中文字体用 Hiragino Sans GB，避免豆腐块）；③ 实在不行就如实说明「生图不可用、本次跳过」，绝不静默失败或伪造图片。
+- **绝不允许在生图失败时，仍往文章里写一个指向不存在文件的图片引用**——那会让公众号发布时图片渲染成本地路径、直接发布失败。
+- 脚本依赖外部 endpoint，可能因配置或网络不可用。一旦连不通或反复失败，按优先级**降级**：① 复用文章已有配图，或从原始论文 PDF 里裁切真实图；② 用 matplotlib 本地画流程图 / 架构图（中文字体用 Hiragino Sans GB，避免豆腐块）；③ 实在不行就如实说明「生图不可用、本次跳过」，绝不静默失败或伪造图片。
 
 ### 5. Cover Image Requirement
 
